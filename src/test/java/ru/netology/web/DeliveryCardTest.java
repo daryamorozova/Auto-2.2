@@ -32,6 +32,29 @@ public class DeliveryCardTest {
         $(byText(date));
     }
 
+//    Способ поиска даты во всплывающем сообщении выбран не очень удачно. В текущей реализации Вы его ищите среди всех
+//    элементов страницы, что совсем ненадёжно, дата ведь используется и в поле формы. Лучше делать так
+//    $("[data-test-id=notification] .notification__content").shouldHave(text("Встреча успешно забронирована на "+date));
+
+    @Test
+    void shouldCorrectForm1() {
+        open("http://localhost:9999");
+        $("[data-test-id='city'] input").setValue("Хабаровск");
+
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dateOfDelivery = LocalDate.now().plusDays(3);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        String date = formatter.format(dateOfDelivery);
+        $("[data-test-id='date'] input").setValue(date);
+
+        $("[data-test-id='name'] input").setValue("Игорь Попов");
+        $("[data-test-id='phone'] input").setValue("+79872229888");
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Забронировать")).click();
+        $(byText("Успешно!")).waitUntil(visible, 11000);
+        $("[data-test-id=notification] .notification__content").shouldHave(text("Встреча успешно забронирована на "+date));
+    }
+
     @Test
     void shouldTestNotCorrectCity() {
         open("http://localhost:9999/");
