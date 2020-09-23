@@ -27,7 +27,9 @@ public class DeliveryCardTest {
         $("[data-test-id='phone'] input").setValue("+79872229888");
         $("[data-test-id='agreement']").click();
         $$("button").find(exactText("Забронировать")).click();
-        $(withText("Успешно!")).waitUntil(visible, 11000);
+        $(byText("Успешно!")).waitUntil(visible, 11000);
+        $(byText("Встреча успешно забронирована на"));
+        $(byText(date));
     }
 
     @Test
